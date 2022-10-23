@@ -7,6 +7,7 @@ const keyData = fs.readFileSync("./p-key.txt", {
   encoding: "utf-8",
   flag: "r",
 });
+console.log(keyData)
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
