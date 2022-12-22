@@ -119,7 +119,7 @@ contract DKPMarketplace is ReentrancyGuard {
                 uint256 currentId = i + 1;
                 MarketToken storage currentItem = idToMarketToken[currentId];
                 items[currentIndex] = currentItem;
-                currentId += 1;
+                currentIndex++;
             }
         }
 
