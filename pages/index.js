@@ -1,3 +1,10 @@
+import dynamic from "next/dynamic";
+import Head from "next/head";
+
+import CardSliderOne from "../components/common/sliders/card/card-slider-one";
+import HeroSection from "../components/home-three/hero-section";
+import NewsLetter from "../components/home-three/news-letter";
+import NftRoadMap from "../components/home-three/nft-roadmap";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {ethers} from "ethers";
@@ -5,18 +12,13 @@ import {marketAddress, nftAddress} from "../config";
 
 import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
 import DKPMarket from '../artifacts/contracts/DKPMarketplace.sol/DKPMarketplace.json'
-import Grid from "@mui/material/Grid";
-import Container from "@mui/material/Container";
-import CssBaseline from "@mui/material/CssBaseline";
-import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import CardActions from "@mui/material/CardActions";
-import Button from "@mui/material/Button";
 import Web3Modal from "web3modal";
 
-export default function Home() {
+const FilterGalarryOne = dynamic(() => import("../components/common/filter-gallary/filter-gallary-one"), {
+    ssr: false,
+});
+
+export default function Index() {
     const [nfts, setNFts] = useState([])
     const [loadingState, setLoadingState] = useState('not-loaded')
     //
@@ -71,46 +73,33 @@ export default function Home() {
         await transaction.wait()
         await loadNFTs()
     }
-    if (loadingState === 'loaded' && nfts.length === 0) return (<h1
-        className='px-20 py-7 text-4x1'>No NFts in marketplace</h1>)
-    return (
-        <div>
-            <CssBaseline/>
-            <Container sx={{py: 8}} maxWidth="md">
-                <Grid container spacing={4}>
-                    {nfts.map((nft) =>
-                        <Grid item xs={12} sm={6} md={4} key={nft}>
-                            <Card sx={{height: '100%', display: 'flex', flexDirection: 'column'}}>
-                                <CardMedia
-                                    component="img"
-                                    sx={{
-                                        // 16:9
-                                        pt: '0',
-                                    }}
-                                    image={nft.image}
-                                    alt="random"
-                                />
-                                <CardContent sx={{flexGrow: 1}}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        {nft.name}
-                                    </Typography>
-                                    <Typography>
-                                        {nft.description}
-                                    </Typography>
-                                    <Typography>
-                                        {nft.price} ETH
-                                    </Typography>
-                                </CardContent>
-                                <CardActions style={{justifyContent: 'end'}}>
-                                    <button className='w-full bg-purple-500 text-white font-bold py-3 px-12 rounded'
-                                            onClick={() => buyNFT(nft)}>Buy
-                                    </button>
-                                </CardActions>
-                            </Card>
-                        </Grid>
-                    )}
-                </Grid>
-            </Container>
-        </div>
-    )
+
+    const handleItem = (item) => {
+        buyNFT(item)
+    }
+
+
+    return (<>
+        <Head>
+            <title>DKP Marketplace</title>
+        </Head>
+        <HeroSection/>
+        <CardSliderOne/>
+        {
+            (loadingState === 'loaded' && nfts.length === 0) ? (
+                <h1
+                    className='px-20 py-7 text-4x1'>No NFts in marketplace
+                </h1>
+
+            ) : <FilterGalarryOne nfts={nfts} handleItem={handleItem}/>
+        }
+        {/*<TextSliderTwo/>*/}
+        {/*<Team/>*/}
+        <NftRoadMap/>
+        <NewsLetter/>
+    </>);
+}
+
+export async function getStaticProps() {
+    return {props: {header: "three", footer: "three"}};
 }

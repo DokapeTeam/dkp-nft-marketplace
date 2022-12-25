@@ -8,11 +8,7 @@ import Web3Modal from "web3modal";
 import {marketAddress, nftAddress} from "../config";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
+import {Col, Row} from "react-bootstrap";
 
 export default function MyNfts() {
     const [nfts, setNFts] = useState([])
@@ -59,37 +55,30 @@ export default function MyNfts() {
     if (loadingState === 'loaded' && !nfts.length) return (<h1
         className='px-20 py-7 text-4x1'>You do not own any NFTs currently :(</h1>)
     return (
-        <div>
+        <div className="section-my-nft">
             <CssBaseline/>
-            <Container sx={{py: 8}} maxWidth="md">
-                <Grid container spacing={4}>
-                    {nfts.map((nft) =>
-                        <Grid item xs={12} sm={6} md={4} key={nft}>
-                            <Card sx={{height: '100%', display: 'flex', flexDirection: 'column'}}>
-                                <CardMedia
-                                    component="img"
-                                    sx={{
-                                        // 16:9
-                                        pt: '0',
-                                    }}
-                                    image={nft.image}
-                                    alt="random"
-                                />
-                                <CardContent sx={{flexGrow: 1}}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        {nft.name}
-                                    </Typography>
-                                    <Typography>
-                                        {nft.description}
-                                    </Typography>
-                                    <Typography>
-                                        {nft.price} ETH
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    )}
-                </Grid>
+            <Container>
+                <Row>
+                    {
+                        nfts.map((nft) => <Col sm={12} xs={6} md={6} lg={3} key={nft}>
+                            <div className="fugu--card-wrap">
+                                <div className="fugu--card-thumb">
+                                    <img src={nft.image} alt=""/>
+                                </div>
+                                <div className="fugu--card-data">
+                                    <h3>{nft.name}</h3>
+                                    <p>{nft.description}</p>
+                                    <div className="fugu--card-footer">
+                                        <div className="fugu--card-footer-data">
+                                            <span>Price:</span>
+                                            <h4>{nft.price} ETH</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Col>)
+                    }
+                </Row>
             </Container>
         </div>
     )
