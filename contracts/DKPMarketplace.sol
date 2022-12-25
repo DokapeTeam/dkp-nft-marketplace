@@ -54,7 +54,7 @@ contract DKPMarketplace is ReentrancyGuard {
         address nftContract,
         uint256 tokenId,
         uint256 price,
-        string category
+        string memory category
     ) public payable nonReentrant {
         require(price > 0, "Price must be at least one wei");
         require(

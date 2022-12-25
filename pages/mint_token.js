@@ -80,7 +80,7 @@ export default function MintTokens() {
         let listingPrice = await contract.getListingPrice()
         listingPrice = listingPrice.toString()
 
-        transaction = await contract.makeMarketItem(nftAddress, tokenId, price, {value: listingPrice})
+        transaction = await contract.makeMarketItem(nftAddress, tokenId, price, "test", {value: listingPrice})
         await transaction.wait()
         await router.push('./')
     }
