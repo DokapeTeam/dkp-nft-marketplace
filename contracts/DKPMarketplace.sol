@@ -28,6 +28,8 @@ contract DKPMarketplace is ReentrancyGuard {
         address payable owner;
         uint256 price;
         bool sold;
+        string category;
+        uint256 dateMinted;
     }
 
     mapping(uint256 => MarketToken) private idToMarketToken;
@@ -39,7 +41,9 @@ contract DKPMarketplace is ReentrancyGuard {
         address seller,
         address owner,
         uint256 price,
-        bool sold
+        bool sold,
+        string category,
+        uint256 dateMinted
     );
 
     function getListingPrice() public view returns (uint256) {
@@ -49,7 +53,8 @@ contract DKPMarketplace is ReentrancyGuard {
     function makeMarketItem(
         address nftContract,
         uint256 tokenId,
-        uint256 price
+        uint256 price,
+        string category
     ) public payable nonReentrant {
         require(price > 0, "Price must be at least one wei");
         require(
@@ -67,7 +72,9 @@ contract DKPMarketplace is ReentrancyGuard {
             payable(msg.sender),
             payable(address(0)),
             price,
-            false
+            false,
+            category,
+            block.timestamp
         );
 
         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
@@ -79,14 +86,16 @@ contract DKPMarketplace is ReentrancyGuard {
             msg.sender,
             address(0),
             price,
-            false
+            false,
+            category,
+            block.timestamp
         );
     }
 
     function createMarketSale(address nftContract, uint256 itemId)
-        public
-        payable
-        nonReentrant
+    public
+    payable
+    nonReentrant
     {
         uint256 price = idToMarketToken[itemId].price;
         uint256 tokenId = idToMarketToken[itemId].tokenId;
@@ -126,7 +135,7 @@ contract DKPMarketplace is ReentrancyGuard {
         return items;
     }
 
-    function fetchMyNFTs() public view returns(MarketToken[] memory) {
+    function fetchMyNFTs() public view returns (MarketToken[] memory) {
         uint totalItemCount = _tokenIds.current();
 
         uint itemCount = 0;
@@ -151,7 +160,7 @@ contract DKPMarketplace is ReentrancyGuard {
         return items;
     }
 
-    function fetchItemsCreated() public view returns(MarketToken[] memory) {
+    function fetchItemsCreated() public view returns (MarketToken[] memory) {
         uint totalItemCount = _tokenIds.current();
 
         uint itemCount = 0;
