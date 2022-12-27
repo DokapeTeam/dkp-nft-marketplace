@@ -1,5 +1,5 @@
-import Home02 from "./Home02";
-import Explore01 from './Explore01'
+import Home from "./Home";
+import MyNfts from './MyNfts'
 import Explore02 from './Explore02'
 import Creator from './Creator'
 import Item from './Item'
@@ -14,8 +14,8 @@ import Register from './Register'
 import Contact from './Contact'
 
 const routes = [
-    {path: '/', component: <Home02/>},
-    {path: '/explore-01', component: <Explore01/>},
+    {path: '/', component: <Home/>},
+    {path: '/my_nfts', component: <MyNfts/>},
     {path: '/explore-02', component: <Explore02/>},
     {path: '/creator', component: <Creator/>},
     {path: '/item', component: <Item/>},
@@ -27,7 +27,8 @@ const routes = [
     {path: '/mint_tokens', component: <CreateItem/>},
     {path: '/login', component: <Login/>},
     {path: '/register', component: <Register/>},
-    {path: '/contact', component: <Contact/>}
+    {path: '/contact', component: <Contact/>},
+    {path: '/*', component: <Home/>}
 ]
 
 export default routes;

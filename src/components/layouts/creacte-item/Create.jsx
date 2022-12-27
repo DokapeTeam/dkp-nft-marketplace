@@ -7,6 +7,9 @@ import NFT from '../../../artifacts/contracts/NFT.sol/NFT.json'
 import DKPMarket from '../../../artifacts/contracts/DKPMarketplace.sol/DKPMarketplace.json'
 import {useNavigate} from "react-router-dom";
 import {Buffer} from 'buffer';
+import {Dropdown} from "react-bootstrap";
+import {categories} from "../../../constants";
+
 
 const PROJECT_ID = "2JFoDYyLmU99VLEK2Kl2NreVPkG";
 const PROJECT_SECRET = "29a1de640039d0a1376e72f618de1287";
@@ -18,15 +21,14 @@ const client = ipfsHttpClient({
         authorization: auth,
     },
 })
-const Create = () => {
 
+const Create = () => {
     const [fileUrl, setFileUrl] = useState(null)
     const [fileName, setFileName] = useState(null)
     const [formInput, updateFormInput] = useState({
-        price: '', name: '', description: ''
+        price: '', name: '', description: '', category: '',
     })
     const navigate = useNavigate()
-
 
     // set up a function to fireoff when we update files in our form - we can add our
     // NFT images - IPFS
@@ -40,17 +42,18 @@ const Create = () => {
             const url = `https://ipfs.io/ipfs/${added.path}`
             setFileUrl(url)
             setFileName(file.name)
+            console.log(fileUrl)
         } catch (error) {
             console.log('Error uploading file:', error)
         }
     }
 
     async function createMarket() {
-        const {name, description, price} = formInput
-        if (!name || !description || !price || !fileUrl) return
+        const {name, description, price, category} = formInput
+        if (!name || !description || !price || !category || !fileUrl) return
         // upload to IPFS
         const data = JSON.stringify({
-            name, description, image: fileUrl
+            name, description, image: fileUrl,
         })
         try {
             const added = await client.add(data)
@@ -84,65 +87,91 @@ const Create = () => {
         let listingPrice = await contract.getListingPrice()
         listingPrice = listingPrice.toString()
 
-        transaction = await contract.makeMarketItem(nftAddress, tokenId, price, "test", {value: listingPrice})
+        console.log(formInput.category, 'form category')
+        transaction = await contract.makeMarketItem(nftAddress, tokenId, price, formInput.category, {value: listingPrice})
         await transaction.wait()
-        await navigate('./')
+        await navigate('/')
     }
 
-    return (
-        <section className="tf-section create-item pd-top-0 mg-t-40">
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="form-create-item-content">
-                            <div className="form-create-item">
-                                <div className="sc-heading">
-                                    <h3>Create Item</h3>
-                                    <p className="desc">Most popular gaming digital nft market place </p>
+    return (<section className="tf-section create-item pd-top-0 mg-t-40">
+        <div className="container">
+            <div className="row">
+                <div className="col-md-12">
+                    <div className="form-create-item-content">
+                        <div className="form-create-item">
+                            <div className="sc-heading">
+                                <h3>Mint Token</h3>
+                                <p className="desc">Most popular gaming digital nft market place </p>
+                            </div>
+                            <div id="create-item-1">
+                                <label className="uploadFile">
+                                    <span className="filename">{fileName ? fileName : 'Choose image'}</span>
+                                    <input type="file" className="inputfile form-control" name="file"
+                                           onChange={onChange}/>
+                                    <span className="icon"><i className="far fa-cloud-upload"></i></span>
+                                </label>
+                                <div className="input-group">
+                                    <input name="name" type="text" placeholder="Item Name" required
+                                           autoComplete='off'
+                                           onChange={e => updateFormInput({...formInput, name: e.target.value})}/>
+                                    <input name="number" type="number" placeholder="Item Price" autoComplete='off'
+                                           required
+                                           onChange={e => {
+                                               updateFormInput({...formInput, price: e.target.value})
+                                           }}/>
                                 </div>
-                                <form id="create-item-1">
-                                    <label className="uploadFile">
-                                        <span className="filename">{fileName ? fileName : 'Choose image'}</span>
-                                        <input type="file" className="inputfile form-control" name="file"
-                                               onChange={onChange}/>
-                                        <span className="icon"><i className="far fa-cloud-upload"></i></span>
-                                    </label>
-                                    <div className="input-group">
-                                        <input name="name" type="text" placeholder="Item Name" required
-                                               onChange={e => updateFormInput({...formInput, name: e.target.value})}/>
-                                        <input name="number" type="text" placeholder="Item Price"
-                                               required
-                                               onChange={e => updateFormInput({...formInput, price: e.target.value})}/>
-                                    </div>
-                                    <div className="input-group">
-                                        <input name="name" type="text" placeholder="Royality" required/>
-                                        <input name="number" type="text" placeholder="Size" required/>
-                                    </div>
-                                    <div className="input-group">
-                                        <input name="name" type="text" placeholder="Blance" required/>
-                                        <input name="number" type="text" placeholder="No Of Copies"
-                                               required/>
-                                    </div>
-                                    <textarea id="comment-message" name="message" tabIndex="4"
-                                              placeholder="Description" aria-required="true"
-                                              onChange={e => updateFormInput({
-                                                  ...formInput, description: e.target.value
-                                              })}></textarea>
+                                {/*<div className="input-group">*/}
+                                {/*    <input name="name" type="text" placeholder="Royality" required/>*/}
+                                {/*    <input name="number" type="text" placeholder="Size" required/>*/}
+                                {/*</div>*/}
+                                <div className="input-group">
+                                    {/*<input name="name" type="text" placeholder="Category" required*/}
+                                    {/*       autoComplete='off'*/}
+                                    {/*       style={{marginRight: 0}} onChange={e => {*/}
+                                    {/*    updateFormInput({*/}
+                                    {/*        ...formInput, category: e.target.value*/}
+                                    {/*    })*/}
+                                    {/*}}/>*/}
 
-                                    <button name="submit"
-                                            className="sc-button style letter style-2" onClick={createMarket}><span>Create Item</span>
-                                    </button>
-                                </form>
+                                    <Dropdown className='input-dropdown'>
+                                        <Dropdown.Toggle className="btn-selector nolink" id="dropdown-basic">
+                                            <span>{formInput.category ? categories[formInput.category] : 'All Categories'}</span>
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            {
+                                                Object.keys(categories).map((key) => {
+                                                    return <Dropdown.Item onClick={() => updateFormInput({
+                                                        ...formInput, category: key
+                                                    })}>
+                                                        <span>{categories[key]}</span>
+                                                    </Dropdown.Item>
+                                                })
+                                            }
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                    {/*<input name="number" type="text" placeholder="No Of Copies"*/}
+                                    {/*       required/>*/}
+                                </div>
+                                <textarea id="comment-message" name="message" tabIndex="4"
+                                          placeholder="Description" aria-required="true"
+                                          style={{marginBottom: 32}}
+                                          onChange={e => updateFormInput({
+                                              ...formInput, description: e.target.value
+                                          })}></textarea>
+
+                                <button name="submit"
+                                        className="sc-button style letter style-2" onClick={createMarket}><span>Create Item</span>
+                                </button>
                             </div>
-                            <div className="form-background">
-                                {fileUrl && <img src={fileUrl} alt='dkp nft marketplace'/>}
-                            </div>
+                        </div>
+                        <div className="form-background">
+                            {fileUrl && <img src={fileUrl} alt='dkp nft marketplace'/>}
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    );
+        </div>
+    </section>);
 };
 
 export default Create;

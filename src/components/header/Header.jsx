@@ -59,11 +59,11 @@ const Header = () => {
                                     </Link>
                                 </div>
                             </div>
-                            <form className="form-search">
-                                <input type="text" placeholder="Search here"/>
-                                <button><i className="far fa-search"></i></button>
-                            </form>
 
+                            {/*<form className="form-search">*/}
+                            {/*    <input type="text" placeholder="Search here"/>*/}
+                            {/*    <button><i className="far fa-search"></i></button>*/}
+                            {/*</form>*/}
                             <nav id="main-nav" className="main-nav" ref={menuLeft}>
                                 <ul id="menu-primary-menu" className="menu">
                                     {

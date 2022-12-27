@@ -14,12 +14,12 @@ const CreateItem = () => {
                     <div className="col-md-12">
                         <div className="page-title-inner flex">
                             <div className="page-title-heading">
-                                <h2 className="heading">Create Item</h2>
+                                <h2 className="heading">Mint Tokens</h2>
                             </div>
                             <div className="breadcrumbs">
                                 <ul>
                                     <li><Link to="/">Home</Link></li>
-                                    <li>Create Item</li>
+                                    <li>Mint Token</li>
                                 </ul>
                             </div>
                         </div>

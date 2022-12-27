@@ -4,21 +4,16 @@ import Slider02 from '../components/slider/Slider02';
 import dataSlider2 from '../assets/fake-data/dataSlider2';
 import Create from '../components/layouts/home02/Create';
 import dataCreate from '../assets/fake-data/dataCreate'
-import LatestCollections from '../components/layouts/home02/LatestCollections';
-import dataCollections from '../assets/fake-data/dataCollections'
-import HotCollections from '../components/layouts/home02/HotCollections';
-import dataHotCollection from '../assets/fake-data/dataHotCollection';
-import PopularCollection from '../components/layouts/home02/PopularCollection';
-import dataPopularCollection from '../assets/fake-data/dataPopularCollection';
 import FooterStyle2 from '../components/footer/FooterStyle2';
 import {ethers} from "ethers";
 import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
 import DKPMarket from '../artifacts/contracts/DKPMarketplace.sol/DKPMarketplace.json'
 import axios from "axios";
 import {marketAddress, nftAddress} from "../config";
-import LiveAutions from "../components/layouts/item/LiveAutions";
+import PopularCollection from "../components/layouts/explore/PopularCollection";
+import Web3Modal from "web3modal";
 
-const Home02 = () => {
+const Home = () => {
     const [nfts, setNFts] = useState([])
     const [loadingState, setLoadingState] = useState('not-loaded')
 
@@ -50,24 +45,43 @@ const Home02 = () => {
                 image: meta.data.image,
                 name: meta.data.name,
                 description: meta.data.description,
-                usdPrice: price * usdCurrencyRate
+                usdPrice: price * usdCurrencyRate,
+                sold: item.sold,
+                category: item.category,
+                createdDate: item.dateMinted,
             }
         }))
         setNFts(items)
+        setLoadingState('loaded')
+    }
+
+    async function buyNFT(nft) {
+        const web3Modal = new Web3Modal()
+        const connection = await web3Modal.connect()
+        const provider = new ethers.providers.Web3Provider(connection)
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract(marketAddress, DKPMarket.abi, signer)
+
+        const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
+        const transaction = await contract.createMarketSale(nftAddress, nft.tokenId, {
+            value: price
+        })
+
+        await transaction.wait()
+        await loadNFTs()
     }
 
     return <div className='home-2'>
         <Header/>
         <Slider02 data={dataSlider2}/>
         {/*<BestSeller data={dataBestSeller}/>*/}
-        <LiveAutions data={nfts}/>
+        <PopularCollection data={nfts} onBuy={buyNFT}/>
         <Create data={dataCreate}/>
-        <LatestCollections data={dataCollections}/>
-        <HotCollections data={dataHotCollection}/>
-        <PopularCollection data={dataPopularCollection}/>
+        {/*<LatestCollections data={dataCollections}/>*/}
+        {/*<HotCollections data={dataHotCollection}/>*/}
         {/*<Newsletters/>*/}
         <FooterStyle2/>
     </div>;
 };
 
-export default Home02;
+export default Home;

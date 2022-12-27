@@ -1,137 +1,126 @@
-import React , {useState} from 'react';
-import { Link } from 'react-router-dom'
-import { Dropdown } from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
+import {Link} from 'react-router-dom'
+import {Dropdown} from 'react-bootstrap';
+import {categories} from "../../../constants";
+import {Empty} from "antd";
 
 const PopularCollection = props => {
+
     const data = props.data;
 
-    const [visible , setVisible] = useState(12);
+    const [nfts, setNfts] = useState(data)
+
+    useEffect(()=> {
+      setNfts(data)
+    },[data])
+
+    const [visible, setVisible] = useState(4);
     const showMoreItems = () => {
         setVisible((prevValue) => prevValue + 4);
     }
-  return (
-    <section className="tf-section trendy-colection-page style-2">
-        <div className="container">
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="wg-drop-category seclect-box">
-                        <Dropdown>
-                            <Dropdown.Toggle className="btn-selector nolink" id="dropdown-basic">
-                                <span>All Categories</span>
-                            </Dropdown.Toggle>
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    });
 
-                            <Dropdown.Menu>
-                            <Dropdown.Item href="#">
-                                <span>NFT</span>
-                            </Dropdown.Item>
-                            <Dropdown.Item href="#">
-                                <span>Crypto</span>
-                            </Dropdown.Item>
-                            <Dropdown.Item href="#">
-                                <span>Token</span>
-                            </Dropdown.Item>
+    const [filterCategory, setFilterCategory] = useState(null)
+    const [sortByDateCreate, setSortByDateCreate] = useState(null)
 
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <Dropdown>
-                            <Dropdown.Toggle className="btn-selector nolink" id="dropdown-basic">
-                                <span>New Items</span>
-                            </Dropdown.Toggle>
+    const filterNft = () => {
+        let newData = data
+        console.log(newData, 'new data')
+        if (filterCategory) {
+            newData = data.filter(item => item.category === filterCategory)
+            console.log(newData, 'filtered ')
+        }
+        // if (sortByDateCreate) {
+        //     newData = data.sort(function (a, b) {
+        //         return a - b;
+        //     })
+        //     console.log(newData, 'newest ')
+        // } else if (sortByDateCreate === false) {
+        //     newData = data.sort(function (a, b) {
+        //         return b - a;
+        //     })
+        //     console.log(newData, 'lowest ')
+        // }
+        setNfts([...newData])
+    }
 
-                            <Dropdown.Menu>
-                            <Dropdown.Item href="#">
-                                <span>New bestsellers</span>
-                            </Dropdown.Item>
-                            <Dropdown.Item href="#">
-                                <span>New releases</span>
-                            </Dropdown.Item>
+    return (
+        <section className="tf-section trendy-colection-page style-2">
+            <div className="container">
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="wg-drop-category seclect-box" style={{justifyContent: "center"}}>
+                            <Dropdown style={{marginRight: 32, marginLeft: 32}}>
+                                <Dropdown.Toggle className="btn-selector nolink" id="dropdown-basic">
+                                    <span>{filterCategory ? categories[filterCategory] : 'All Categories'}</span>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    {
+                                        Object.keys(categories).map((key, index) => {
+                                            return <Dropdown.Item key={index} onClick={() => setFilterCategory(key)} >
+                                                <span>{categories[key]}</span>
+                                            </Dropdown.Item>
+                                        })
+                                    }
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <Dropdown style={{marginRight: 32, marginLeft: 32}}>
+                                <Dropdown.Toggle className="btn-selector nolink" id="dropdown-basic">
+                                    <span>{sortByDateCreate !== null ? sortByDateCreate ? "Newest" : "Lowest" : "Date Created"}</span>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item href="" onClick={() => setSortByDateCreate(true)}>
+                                        <span>Newest</span>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item href="" onClick={() => setSortByDateCreate(false)}>
+                                        <span>Lowest</span>
+                                    </Dropdown.Item>
 
-                            </Dropdown.Menu>
-                        </Dropdown>
-
-                        <Dropdown>
-                            <Dropdown.Toggle className="btn-selector nolink" id="dropdown-basic">
-                                <span>Buy Now</span>
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                            <Dropdown.Item href="#">
-                                <span>Wallet</span>
-                            </Dropdown.Item>
-                            <Dropdown.Item href="#">
-                                <span>Website</span>
-                            </Dropdown.Item>
-
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <Dropdown>
-                            <Dropdown.Toggle className="btn-selector nolink" id="dropdown-basic">
-                                <span>Sort By</span>
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                            <Dropdown.Item href="#">
-                                <span>View</span>
-                            </Dropdown.Item>
-                            <Dropdown.Item href="#">
-                                <span>Rating</span>
-                            </Dropdown.Item>
-                            <Dropdown.Item href="#">
-                                <span>Sale</span>
-                            </Dropdown.Item>
-                            <Dropdown.Item href="#">
-                                <span>Date</span>
-                            </Dropdown.Item>
-
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <button className="sc-button style letter style-2"><span>Filter</span> </button>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <button style={{marginRight: 32, marginLeft: 32}}
+                                    className="sc-button style letter style-2" onClick={filterNft}><span>Filter</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                {
-                    data.slice(0,visible).map((item,index)=> (
-                        <div key={index} className="fl-item col-xl-3 col-lg-4 col-md-6">
-                            <div className="sc-product-item style-5">
-                                <div className="product-img">
-                                    <img src={item.img} alt="Bidzen" />
-                                    <Link to="/connect-wallet"
-                                        className="sc-button style letter"><span>Place Bid</span></Link>
-                                    <label>{item.tags}</label>
-                                    <div className="avatar-box">
-                                        {
-                                            item.avtList.map((item,index) => (
-                                                <img key={index} src={item.img1} alt="Bidzen" />
-                                            ))
-                                        }
+                    {
+                        nfts.length >0 ? (nfts.slice(0, visible).map((item, index) => (
+                            <div key={index} className="fl-item col-xl-3 col-lg-4 col-md-6">
+                                <div className="sc-product-item style-5">
+                                    <div className="product-img">
+                                        <img src={item.image} alt="Bidzen"/>
+                                        {!item.sold &&
+                                            <Link to="" className="sc-button style letter"
+                                                  onClick={() => props.onBuy(item)}><span>Buy</span></Link>}
+                                        <label>{item.category}</label>
                                     </div>
-                                </div>
-                                <div className="product-content">
-                                    <h5 className="title"><Link to="/item-details">{item.title}</Link> </h5>
-                                    <div className="product-author flex">
-                                        <div className="avatar">
-                                            <img src={item.avt} alt="Bidzen" />
-                                        </div>
-                                        <div className="infor">
-                                            <div className="author-name"><Link to="/authors">{item.name}</Link></div>
-                                            <span>Creator</span>
+                                    <div className="product-content">
+                                        <h5 className="title"><Link to="/item-details">{item.name}</Link></h5>
+                                        <p className="title">{item.description}</p>
+                                        <div className="price">
+                                            <span>{item.price} ETH</span>
+                                            <span> = {formatter.format(item.usdPrice)}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        ))) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"No Data"}style={{color: "white", margin :"0 auto"}} />)
+                    }
+
+                    {
+                        visible < nfts.length  &&
+                        <div className="col-md-12">
+                            <button id="loadmore" className=" sc-button style letter style-2" onClick={showMoreItems}>
+                                <span>Explore More</span>
+                            </button>
                         </div>
-                    ))
-                }
-                
-                {
-                    visible < data.length && 
-                    <div className="col-md-12">
-                        <button id="loadmore" className=" sc-button style letter style-2" onClick={showMoreItems}><span>Explore More</span>
-                        </button>
-                     </div>
-                }
+                    }
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
     );
 };
 
