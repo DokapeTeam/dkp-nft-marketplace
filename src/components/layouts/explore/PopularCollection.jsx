@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import {Dropdown} from 'react-bootstrap';
 import {categories} from "../../../constants";
 import {Empty} from "antd";
 
 const PopularCollection = props => {
-
+    const navigate = useNavigate()
     const data = props.data;
 
     const [nfts, setNfts] = useState(data)
 
-    useEffect(()=> {
-      setNfts(data)
-    },[data])
+    useEffect(() => {
+        setNfts(data)
+    }, [data])
 
     const [visible, setVisible] = useState(4);
     const showMoreItems = () => {
@@ -21,6 +21,7 @@ const PopularCollection = props => {
     const formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
+        minimumFractionDigits: 4,
     });
 
     const [filterCategory, setFilterCategory] = useState(null)
@@ -33,18 +34,21 @@ const PopularCollection = props => {
             newData = data.filter(item => item.category === filterCategory)
             console.log(newData, 'filtered ')
         }
-        // if (sortByDateCreate) {
-        //     newData = data.sort(function (a, b) {
-        //         return a - b;
-        //     })
-        //     console.log(newData, 'newest ')
-        // } else if (sortByDateCreate === false) {
-        //     newData = data.sort(function (a, b) {
-        //         return b - a;
-        //     })
-        //     console.log(newData, 'lowest ')
-        // }
+        if (sortByDateCreate) {
+            newData = data.sort(function (a, b) {
+                return b.createdDate - a.createdDate;
+            })
+        } else if (sortByDateCreate === false) {
+            newData = data.sort(function (a, b) {
+                return a.createdDate - b.createdDate;
+            })
+        }
         setNfts([...newData])
+    }
+
+    const handleItem = (item) => {
+        console.log(item)
+        navigate('/item-details',{state: {item}})
     }
 
     return (
@@ -60,7 +64,7 @@ const PopularCollection = props => {
                                 <Dropdown.Menu>
                                     {
                                         Object.keys(categories).map((key, index) => {
-                                            return <Dropdown.Item key={index} onClick={() => setFilterCategory(key)} >
+                                            return <Dropdown.Item key={index} onClick={() => setFilterCategory(key)}>
                                                 <span>{categories[key]}</span>
                                             </Dropdown.Item>
                                         })
@@ -87,18 +91,18 @@ const PopularCollection = props => {
                         </div>
                     </div>
                     {
-                        nfts.length >0 ? (nfts.slice(0, visible).map((item, index) => (
+                        nfts.length > 0 ? (nfts.slice(0, visible).map((item, index) => (
                             <div key={index} className="fl-item col-xl-3 col-lg-4 col-md-6">
                                 <div className="sc-product-item style-5">
                                     <div className="product-img">
-                                        <img src={item.image} alt="Bidzen"/>
+                                        <img src={item.image} alt="Dkp" style={{height: 200}}/>
                                         {!item.sold &&
                                             <Link to="" className="sc-button style letter"
                                                   onClick={() => props.onBuy(item)}><span>Buy</span></Link>}
                                         <label>{item.category}</label>
                                     </div>
                                     <div className="product-content">
-                                        <h5 className="title"><Link to="/item-details">{item.name}</Link></h5>
+                                        <h5 onClick={() => handleItem(item)} className="title"><a href=''>{item.name}</a></h5>
                                         <p className="title">{item.description}</p>
                                         <div className="price">
                                             <span>{item.price} ETH</span>
@@ -107,11 +111,11 @@ const PopularCollection = props => {
                                     </div>
                                 </div>
                             </div>
-                        ))) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"No Data"}style={{color: "white", margin :"0 auto"}} />)
+                        ))) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"No Data"}
+                                      style={{color: "white", margin: "0 auto"}}/>)
                     }
-
                     {
-                        visible < nfts.length  &&
+                        visible < nfts.length &&
                         <div className="col-md-12">
                             <button id="loadmore" className=" sc-button style letter style-2" onClick={showMoreItems}>
                                 <span>Explore More</span>

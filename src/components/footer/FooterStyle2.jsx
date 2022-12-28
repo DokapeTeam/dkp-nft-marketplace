@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 
 import logo from '../../assets/images/logo/logo_dark.png'
 import logo2x from '../../assets/images/logo/logo_dark@2x.png'
+import {ReactComponent as DkpLogo} from "../../assets/images/logo/dkp_logo.svg";
+
 
 const FooterStyle2 = () => {
     const [dataSocial] = useState([
@@ -79,8 +81,7 @@ const FooterStyle2 = () => {
                             <div className="widget widget-logo">
                                 <div className="logo-footer" id="logo-footer">
                                     <Link to="/">
-                                        <img id="logo_footer" src={logo} alt="nft-gaming"
-                                            srcSet={logo2x} />
+                                        <DkpLogo width={50} height={50}/>
                                     </Link>
                                 </div>
                             </div>
@@ -112,8 +113,8 @@ const FooterStyle2 = () => {
             <div className="bottom">
                 <div className="container">
                     <div className="bottom-inner">
-                        Copyright © 2022 Bidzen | NFT Marketplace React Js Template. Designed by <a
-                            href="https://themeforest.net/user/themesflat/portfolio"> Themesflat</a>
+                        Copyright © 2022 DKP | NFT Marketplace. Designed by <a
+                            href="https://github.com/DokapeTeam"> DKP Team</a>
                     </div>
                 </div>
             </div>

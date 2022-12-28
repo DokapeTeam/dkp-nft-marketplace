@@ -3,6 +3,13 @@ const {ethers} = require("hardhat");
 
 async function main() {
 
+    const accounts = await ethers.getSigners()
+
+    for (let i = 0; i < accounts.length; i++) {
+        const account = accounts[i]
+        console.log(account.address)
+    }
+
     const DKPMarketplace = await ethers.getContractFactory("DKPMarketplace");
     const marketplace = await DKPMarketplace.deploy();
     await marketplace.deployed();

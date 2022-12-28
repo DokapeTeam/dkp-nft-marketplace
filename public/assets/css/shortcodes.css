@@ -125,7 +125,7 @@
     margin: -30px 0 0 -30px;
     background: #ffffff;
     border-radius: 50%;
-    background-image: url(../icon/Favicon.png);
+    background-image: url(public/assets/icon/Favicon.png);
     background-repeat: no-repeat;
     background-position: center center;
     animation: preload 1s linear infinite alternate;

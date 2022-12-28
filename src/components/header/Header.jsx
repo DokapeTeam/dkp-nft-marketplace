@@ -5,10 +5,13 @@ import logo from '../../assets/images/logo/logo_dark.png'
 import logo2x from '../../assets/images/logo/logo_dark@2x.png'
 import logolight from '../../assets/images/logo/logo.png'
 import logolight2x from '../../assets/images/logo/logo@2x.png'
+import {ReactComponent as DkpLogo} from "../../assets/images/logo/dkp_logo.svg";
 import menus from "../../pages/menu";
 import DarkMode from "./DarkMode"
 
 import icon from '../../assets/images/icon/connect-wallet.svg'
+import { useEthers, useEtherBalance } from "@usedapp/core";
+import { formatEther } from "@ethersproject/units";
 
 const Header = () => {
     const {pathname} = useLocation();
@@ -41,6 +44,17 @@ const Header = () => {
         setActiveIndex(index);
     };
 
+    const {activateBrowserWallet, account} = useEthers();
+    const etherBalance = useEtherBalance(account);
+
+    function handleConnectWallet() {
+        activateBrowserWallet();
+        console.log(`${etherBalance && parseFloat(formatEther(etherBalance)).toFixed(3)} ETH ${account.slice(0, 6)}...${account.slice(
+            account.length - 5,
+            account.length
+        )}`)
+    }
+
     return <div>
         <TopBar/>
         <header id="header_main" className="header_1 js-header" ref={headerRef}>
@@ -52,10 +66,11 @@ const Header = () => {
                             <div id="site-logo" className="clearfix">
                                 <div id="site-logo-inner">
                                     <Link to="/" rel="home" className="main-logo">
-                                        <img id="logo_header" className='logo-dark' src={logo} srcSet={logo2x}
-                                             alt="nft-gaming"/>
-                                        <img id="logo_header" className='logo-light' src={logolight}
-                                             srcSet={logolight2x} alt="nft-gaming"/>
+                                        <DkpLogo width={50} height={50}/>
+                                        {/*<img id="logo_header" className='logo-dark' src={logo} srcSet={logo2x}*/}
+                                        {/*     alt="nft-gaming"/>*/}
+                                        {/*<img id="logo_header" className='logo-light' src={logolight}*/}
+                                        {/*     srcSet={logolight2x} alt="nft-gaming"/>*/}
                                     </Link>
                                 </div>
                             </div>
@@ -77,7 +92,7 @@ const Header = () => {
                                 </ul>
                             </nav>
                             <div className="button-connect-wallet">
-                                <Link to="/connect-wallet" className="sc-button wallet  style-2">
+                                <Link to="" className="sc-button wallet  style-2" onClick={() => handleConnectWallet}>
                                     <img src={icon} alt="icon"/>
                                     <span>Connect Wallet</span>
                                 </Link>

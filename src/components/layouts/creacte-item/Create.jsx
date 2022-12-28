@@ -50,7 +50,10 @@ const Create = () => {
 
     async function createMarket() {
         const {name, description, price, category} = formInput
-        if (!name || !description || !price || !category || !fileUrl) return
+        if (!name || !description || !price || !category || !fileUrl) {
+            console.log(`${name}   ${description}   ${price}   ${category}   ${fileUrl} `)
+            return
+        }
         // upload to IPFS
         const data = JSON.stringify({
             name, description, image: fileUrl,
@@ -71,13 +74,14 @@ const Create = () => {
         const connection = await web3Modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
         const signer = provider.getSigner()
-        console.log(url)
 
         // we want to create the token
         let contract = new ethers.Contract(nftAddress, NFT.abi, signer)
         let transaction = await contract.mintToken(url)
         let tx = await transaction.wait()
+        console.log(tx)
         let event = tx.events[0]
+        console.log(event)
         let value = event.args[2]
         let tokenId = value.toNumber()
         const price = ethers.utils.parseUnits(formInput.price, 'ether')
@@ -139,8 +143,8 @@ const Create = () => {
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
                                             {
-                                                Object.keys(categories).map((key) => {
-                                                    return <Dropdown.Item onClick={() => updateFormInput({
+                                                Object.keys(categories).map((key,index) => {
+                                                    return <Dropdown.Item key={index} onClick={() => updateFormInput({
                                                         ...formInput, category: key
                                                     })}>
                                                         <span>{categories[key]}</span>

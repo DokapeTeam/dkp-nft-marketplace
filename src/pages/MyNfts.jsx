@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom'
 import Header from '../components/header/Header';
 import PopularCollection from '../components/layouts/explore/PopularCollection';
-import dataPopularCollection from '../assets/fake-data/dataPopularCollection';
 import Footer from '../components/footer/Footer';
 import Web3Modal from "web3modal";
 import {ethers} from "ethers";
@@ -49,6 +48,7 @@ const MyNfts = () => {
                 usdPrice: price * usdCurrencyRate,
                 sold: item.sold,
                 category: item.category,
+                createdDate: item.dateMinted.toNumber(),
             }
         }))
 

@@ -24,18 +24,19 @@ const Home = () => {
     }, [])
 
     const loadNFTs = async () => {
-        const provider = new ethers.providers.JsonRpcProvider()
+        const provider = new ethers.providers.Web3Provider(
+            window.ethereum
+        )
+        console.log(provider)
         const tokenContract = new ethers.Contract(nftAddress, NFT.abi, provider)
         const marketContract = new ethers.Contract(marketAddress, DKPMarket.abi, provider)
         const data = await marketContract.fetchMarketTokens()
-        console.log(data)
         const currencyRateResponse = await axios.get('https://www.binance.com/api/v3/ticker/price?symbol=ETHUSDT')
         const usdCurrencyRate = currencyRateResponse.data['price']
         items = await Promise.all(data.map(async item => {
             const tokenUri = await tokenContract.tokenURI(item.tokenId)
             // we want get the token metadata - json
             const meta = await axios.get(tokenUri)
-            console.log(tokenUri, "token uri")
             let price = ethers.utils.formatUnits(item.price.toString(), 'ether')
             return {
                 price,
@@ -48,10 +49,11 @@ const Home = () => {
                 usdPrice: price * usdCurrencyRate,
                 sold: item.sold,
                 category: item.category,
-                createdDate: item.dateMinted,
+                createdDate: item.dateMinted.toNumber(),
             }
         }))
         setNFts(items)
+        console.log(items)
         setLoadingState('loaded')
     }
 

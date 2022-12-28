@@ -22,13 +22,13 @@ const Create = props => {
                         <div key={index} className="col-lg-3 col-md-6 col-12">
                         <div className={`sc-wallet style-2 ${item.class}`}>
                             <div className="icon">
-                                <img src={item.img} alt="Bidzen" />
+                                <img src={item.img} alt="dkp" />
                             </div>
                             <div className="content">
-                                <h5><Link to="/connect-wallet">{item.title}</Link></h5>
+                                <h5>{item.title}</h5>
                                 <p>{item.desc}</p>
-                                <Link to="/connect-wallet" className="read-more"><i
-                                        className="fas fa-arrow-right"></i></Link>
+                                {/*<Link to="/connect-wallet" className="read-more"><i*/}
+                                {/*        className="fas fa-arrow-right"></i></Link>*/}
                             </div>
                         </div>
                     </div>
