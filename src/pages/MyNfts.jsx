@@ -13,7 +13,7 @@ import DKPMarket from '../artifacts/contracts/DKPMarketplace.sol/DKPMarketplace.
 const MyNfts = () => {
 
     const [nfts, setNFts] = useState([])
-    const [loadingState, setLoadingState] = useState('not-loaded')
+    const [loadingState, setLoadingState] = useState(false)
 
     useEffect(() => {
         loadNFTs()
@@ -53,7 +53,7 @@ const MyNfts = () => {
         }))
 
         setNFts(items)
-        setLoadingState('loaded')
+        setLoadingState(true)
     }
 
 
@@ -80,7 +80,7 @@ const MyNfts = () => {
             </div>
         </section>
         {/*<LatestCollection data={dataCollections} />*/}
-        <PopularCollection data={nfts}/>
+        <PopularCollection data={nfts} loaded={loadingState}/>
         {/*<Newsletters />*/}
         <Footer/>
     </div>;

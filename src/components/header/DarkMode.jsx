@@ -33,7 +33,6 @@ const DarkMode = () => {
     }
     return (
         <div className="mode_switcher">
-        <h6>Dark mode <strong>Available</strong></h6>
         <Link to="#" 
             onClick={e => switchTheme(e)}  >
             <img src={imgsun} alt="" />

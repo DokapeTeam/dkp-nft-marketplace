@@ -22,7 +22,7 @@ module.exports = {
             url: `https://mainnet.infura.io/v3/${process.env.PROJECT_ID}`,
             accounts: [keyData]
         },
-        goerli:{
+        goerli: {
             url: `https://goerli.infura.io/v3/25dc0faf706e414c840be5c220004aa3`,
             accounts: [keyData]
         }
@@ -35,5 +35,6 @@ module.exports = {
                 runs: 200
             }
         }
-    }
+    },
+    allowUnlimitedContractSize: true
 };

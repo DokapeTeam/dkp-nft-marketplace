@@ -15,7 +15,7 @@ import Web3Modal from "web3modal";
 
 const Home = () => {
     const [nfts, setNFts] = useState([])
-    const [loadingState, setLoadingState] = useState('not-loaded')
+    const [loadingState, setLoadingState] = useState(false)
 
     let items = []
 
@@ -24,6 +24,7 @@ const Home = () => {
     }, [])
 
     const loadNFTs = async () => {
+        setLoadingState(false)
         const provider = new ethers.providers.Web3Provider(
             window.ethereum
         )
@@ -54,7 +55,7 @@ const Home = () => {
         }))
         setNFts(items)
         console.log(items)
-        setLoadingState('loaded')
+        setLoadingState(true)
     }
 
     async function buyNFT(nft) {
@@ -76,9 +77,9 @@ const Home = () => {
     return <div className='home-2'>
         <Header/>
         <Slider02 data={dataSlider2}/>
-        {/*<BestSeller data={dataBestSeller}/>*/}
-        <PopularCollection data={nfts} onBuy={buyNFT}/>
         <Create data={dataCreate}/>
+        {/*<BestSeller data={dataBestSeller}/>*/}
+        <PopularCollection data={nfts} onBuy={buyNFT} loaded={loadingState}/>
         {/*<LatestCollections data={dataCollections}/>*/}
         {/*<HotCollections data={dataHotCollection}/>*/}
         {/*<Newsletters/>*/}

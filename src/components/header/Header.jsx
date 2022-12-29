@@ -1,19 +1,17 @@
 import React, {useEffect, useRef, useState} from 'react';
 import TopBar from './TopBar';
-import {Link, useLocation} from 'react-router-dom'
-import logo from '../../assets/images/logo/logo_dark.png'
-import logo2x from '../../assets/images/logo/logo_dark@2x.png'
-import logolight from '../../assets/images/logo/logo.png'
-import logolight2x from '../../assets/images/logo/logo@2x.png'
+import {Link, useLocation, useNavigate} from 'react-router-dom'
 import {ReactComponent as DkpLogo} from "../../assets/images/logo/dkp_logo.svg";
 import menus from "../../pages/menu";
 import DarkMode from "./DarkMode"
 
 import icon from '../../assets/images/icon/connect-wallet.svg'
-import { useEthers, useEtherBalance } from "@usedapp/core";
-import { formatEther } from "@ethersproject/units";
+import {useEtherBalance, useEthers} from "@usedapp/core";
+import {formatEther} from "@ethersproject/units";
+import {auth} from "../../firebase";
 
 const Header = () => {
+    const navigate = useNavigate()
     const {pathname} = useLocation();
     const headerRef = useRef(null)
     useEffect(() => {
@@ -47,7 +45,7 @@ const Header = () => {
     const {activateBrowserWallet, account} = useEthers();
     const etherBalance = useEtherBalance(account);
 
-    function handleConnectWallet() {
+    const handleConnectWallet = () => {
         activateBrowserWallet();
         console.log(`${etherBalance && parseFloat(formatEther(etherBalance)).toFixed(3)} ETH ${account.slice(0, 6)}...${account.slice(
             account.length - 5,
@@ -85,19 +83,23 @@ const Header = () => {
                                         menus.map((data, index) => (
                                             <li key={index}
                                                 className={`menu-item menu-item ${activeIndex === index ? 'active' : ''} `}>
-                                                <a href={data.url}>{data.name}</a>
+                                                <a href='' onClick={() => {
+                                                    !auth.currentUser ?
+                                                        navigate('/sign_in')
+                                                        : navigate(data.url)
+                                                }}>{data.name}</a>
                                             </li>
                                         ))
                                     }
                                 </ul>
                             </nav>
                             <div className="button-connect-wallet">
-                                <Link to="" className="sc-button wallet  style-2" onClick={() => handleConnectWallet}>
+                                <a href="" className="sc-button wallet style-2"
+                                      onClick={() => !auth.currentUser ? navigate('/sign_in') : handleConnectWallet}>
                                     <img src={icon} alt="icon"/>
                                     <span>Connect Wallet</span>
-                                </Link>
+                                </a>
                             </div>
-
                             <DarkMode/>
                         </div>
                     </div>

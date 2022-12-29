@@ -2,11 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom'
 import {Dropdown} from 'react-bootstrap';
 import {categories} from "../../../constants";
-import {Empty} from "antd";
+import {Empty, Spin} from "antd";
+import authorAvt from '../../../assets/images/avatar/author.jpg'
 
 const PopularCollection = props => {
     const navigate = useNavigate()
     const data = props.data;
+    const loaded = props.loaded
 
     const [nfts, setNfts] = useState(data)
 
@@ -32,7 +34,6 @@ const PopularCollection = props => {
         console.log(newData, 'new data')
         if (filterCategory) {
             newData = data.filter(item => item.category === filterCategory)
-            console.log(newData, 'filtered ')
         }
         if (sortByDateCreate) {
             newData = data.sort(function (a, b) {
@@ -46,9 +47,8 @@ const PopularCollection = props => {
         setNfts([...newData])
     }
 
-    const handleItem = (item) => {
-        console.log(item)
-        navigate('/item-details',{state: {item}})
+    const handleItemClick = (item) => {
+        navigate('/item-details', {state: {item}})
     }
 
     return (
@@ -88,31 +88,45 @@ const PopularCollection = props => {
                             <button style={{marginRight: 32, marginLeft: 32}}
                                     className="sc-button style letter style-2" onClick={filterNft}><span>Filter</span>
                             </button>
+                            <button className="sc-button style letter style-2" onClick={filterNft}><span>Clear Filter</span>
+                            </button>
                         </div>
                     </div>
                     {
-                        nfts.length > 0 ? (nfts.slice(0, visible).map((item, index) => (
-                            <div key={index} className="fl-item col-xl-3 col-lg-4 col-md-6">
-                                <div className="sc-product-item style-5">
-                                    <div className="product-img">
-                                        <img src={item.image} alt="Dkp" style={{height: 200}}/>
-                                        {!item.sold &&
-                                            <Link to="" className="sc-button style letter"
-                                                  onClick={() => props.onBuy(item)}><span>Buy</span></Link>}
-                                        <label>{item.category}</label>
-                                    </div>
-                                    <div className="product-content">
-                                        <h5 onClick={() => handleItem(item)} className="title"><a href=''>{item.name}</a></h5>
-                                        <p className="title">{item.description}</p>
-                                        <div className="price">
-                                            <span>{item.price} ETH</span>
-                                            <span> = {formatter.format(item.usdPrice)}</span>
+                        loaded ? nfts.length > 0 ? (nfts.slice(0, visible).map((item, index) => (
+                                <div key={index} className="fl-item col-xl-3 col-lg-4 col-md-6">
+                                    <div className="sc-product-item style-5">
+                                        <div className="product-img">
+                                            <img src={item.image} alt="Dkp" style={{height: 200}}/>
+                                            {!item.sold &&
+                                                <Link to="" className="sc-button style letter"
+                                                      onClick={() => props.onBuy(item)}><span>Buy</span></Link>}
+                                            <label style={{borderRadius: 4}}>{item.category.toUpperCase()}</label>
+                                        </div>
+                                        <div className="product-content">
+                                            <h5 onClick={() => handleItemClick(item)} className="title"><a
+                                                href=''>{item.name}</a></h5>
+                                            <p className="title">{item.description}</p>
+                                            <div className="product-author flex" style={{marginBottom: 22}}>
+                                                <div className="avatar">
+                                                    <img src={authorAvt} alt="dkp"/>
+                                                </div>
+                                                <div className="infor">
+                                                    <div className="author-name"><Link to="/authors">Anh Tran Si Nguyen</Link>
+                                                    </div>
+                                                    <span>Creator</span>
+                                                </div>
+                                            </div>
+                                            <div className="price">
+                                                <span>{item.price} ETH</span>
+                                                <span> ~ {formatter.format(item.usdPrice)}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"No Data"}
-                                      style={{color: "white", margin: "0 auto"}}/>)
+                            ))) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"No Data"}
+                                          style={{color: "white", margin: "0 auto"}}/>) :
+                            <Spin style={{margin: "0 auto"}} size={'large'}/>
                     }
                     {
                         visible < nfts.length &&

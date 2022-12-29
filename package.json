@@ -20,6 +20,7 @@
     "ether": "^0.0.9",
     "ethereum-waffle": "^3.4.4",
     "ethers": "^5.7.2",
+    "firebase": "^9.15.0",
     "hardhat": "^2.12.4",
     "ipfs-http-client": "^59.0.0",
     "node-sass": "^7.0.1",

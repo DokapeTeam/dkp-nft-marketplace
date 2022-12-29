@@ -11,8 +11,8 @@ const menus = [
     },
     {
         id: 4,
-        name: 'Account Dashboard',
-        url: "account_dashboard"
+        name: 'Profile',
+        url: "profile"
     },
 
 ]

@@ -25,9 +25,10 @@ const routes = [
     {path: '/authors', component: <Authors/>},
     {path: '/connect-wallet', component: <ConnectWallet/>},
     {path: '/mint_tokens', component: <CreateItem/>},
-    {path: '/login', component: <Login/>},
-    {path: '/register', component: <Register/>},
+    {path: '/sign_in', component: <Login/>},
+    {path: '/sign_up', component: <Register/>},
     {path: '/contact', component: <Contact/>},
+    {path: '/profile', component: <Authors/>},
     {path: '/*', component: <Home/>}
 ]
 
