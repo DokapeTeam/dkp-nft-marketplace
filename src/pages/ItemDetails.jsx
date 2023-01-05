@@ -107,7 +107,7 @@ const ItemDetails = () => {
                             <p className="mg-bt-42">{item.description}</p>
                             <div className="author-item">
                                 <div className="avatar">
-                                    <img src={item.author.photoUrl} alt="dkp"/>
+                                    <img src={item.author.photoUrl} alt="dkp" style={{objectFit: 'cover', height: '100%'}}/>
                                 </div>
                                 <div className="infor">
                                     <div className="create">Owner By</div>
