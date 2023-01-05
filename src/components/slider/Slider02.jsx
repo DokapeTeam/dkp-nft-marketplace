@@ -40,7 +40,7 @@ const SliderItem = props => (
                             <h1 className="heading">{props.item.title}</h1>
                             <p className="sub-heading">{props.item.description}</p>
                             <div className="button-slider">
-                                <Link to="/explore-01"
+                                <Link to=""
                                     className="sc-button btn-bordered-white style letter "><span>Explore
                                         More</span></Link>
                                 <Link to="/mint_tokens"

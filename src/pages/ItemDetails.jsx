@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import {Link, useLocation} from 'react-router-dom'
+import {Link, useLocation, useNavigate} from 'react-router-dom'
 import Header from '../components/header/Header';
-import Countdown from 'react-countdown';
 import 'react-tabs/style/react-tabs.css';
 import LiveAution from '../components/layouts/home02/LiveAution';
 import dataLiveAution from '../assets/fake-data/dataLiveAution'
@@ -10,7 +9,11 @@ import Footer from '../components/footer/Footer';
 import img1 from '../assets/images/avatar/avt-6.jpg'
 import img2 from '../assets/images/avatar/avt-2.jpg'
 import img3 from '../assets/images/avatar/avt-4.jpg'
-import authorAvt from '../assets/images/avatar/author.jpg'
+import Web3Modal from "web3modal";
+import {ethers} from "ethers";
+import {marketAddress, nftAddress} from "../config";
+import DKPMarket from "../artifacts/contracts/DKPMarketplace.sol/DKPMarketplace.json";
+import {useEthers} from "@usedapp/core";
 
 const ItemDetails = () => {
     const {state} = useLocation();
@@ -37,6 +40,26 @@ const ItemDetails = () => {
             },
         ]
     )
+    const navigate = useNavigate()
+
+    const {account} = useEthers()
+
+    async function buyNFT(nft) {
+        const web3Modal = new Web3Modal()
+        const connection = await web3Modal.connect()
+        const provider = new ethers.providers.Web3Provider(connection)
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract(marketAddress, DKPMarket.abi, signer)
+
+        const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
+        const transaction = await contract.createMarketSale(nftAddress, nft.tokenId, {
+            value: price
+        })
+
+        await transaction.wait()
+        await navigate('/')
+    }
+
     const formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
@@ -71,7 +94,7 @@ const ItemDetails = () => {
                     <div className="col-xl-6 col-lg-12 col-md-12">
                         <div className="item-media">
                             <div className="media">
-                                <img src={item.image} alt="Bidzen"/>
+                                <img src={item.image} alt="dkp"/>
                             </div>
                             {/*<div className="countdown style-2">*/}
                             {/*    <Countdown date={Date.now() + 500000000}/>*/}
@@ -84,11 +107,11 @@ const ItemDetails = () => {
                             <p className="mg-bt-42">{item.description}</p>
                             <div className="author-item">
                                 <div className="avatar">
-                                    <img src={authorAvt} alt="dkp"/>
+                                    <img src={item.author.photoUrl} alt="dkp"/>
                                 </div>
                                 <div className="infor">
                                     <div className="create">Owner By</div>
-                                    <h6><Link to="/authors">Anh Tran Si Nguyen</Link></h6>
+                                    <h6><Link to="/authors">{item.author.displayName}</Link></h6>
                                     <div className="widget-social">
                                         <ul>
                                             <li><Link to="#" className="active"><i
@@ -115,7 +138,7 @@ const ItemDetails = () => {
                             {/*<div className="author-bid">*/}
                             {/*    <div className="author-item">*/}
                             {/*        <div className="avatar">*/}
-                            {/*            <img src={avt2} alt="Bidzen"/>*/}
+                            {/*            <img src={avt2} alt="dkp"/>*/}
                             {/*        </div>*/}
                             {/*        <div className="infor">*/}
                             {/*            <h6><Link to="/authors">Keith J. Kelley</Link></h6>*/}
@@ -124,7 +147,7 @@ const ItemDetails = () => {
                             {/*    </div>*/}
                             {/*    <div className="author-item">*/}
                             {/*        <div className="avatar">*/}
-                            {/*            <img src={avt3} alt="Bidzen"/>*/}
+                            {/*            <img src={avt3} alt="dkp"/>*/}
                             {/*        </div>*/}
                             {/*        <div className="infor">*/}
                             {/*            <h6><Link to="/authors">David Michels</Link></h6>*/}
@@ -140,8 +163,8 @@ const ItemDetails = () => {
                             {/*    </div>*/}
                             {/*    /!*<div className="pagi">1 Of 9</div>*!/*/}
                             {/*</div>*/}
-                            {!item.sold &&
-                                <Link to="/connect-wallet"
+                            {!item.sold && (account !== item.seller) &&
+                                <Link to="#" onClick={() => buyNFT(item)}
                                       className="sc-button style letter style-2 style-item-details"><span>Buy</span>
                                 </Link>
                             }
@@ -161,7 +184,7 @@ const ItemDetails = () => {
                             {/*                            <div className="content">*/}
                             {/*                                <div className="author-item">*/}
                             {/*                                    <div className="avatar">*/}
-                            {/*                                        <img src={item.img} alt="Bidzen"/>*/}
+                            {/*                                        <img src={item.img} alt="dkp"/>*/}
                             {/*                                    </div>*/}
                             {/*                                    <div className="infor">*/}
                             {/*                                        <p>Bid listed for <span*/}
@@ -183,7 +206,7 @@ const ItemDetails = () => {
                             {/*                    <div className="content">*/}
                             {/*                        <div className="author-item">*/}
                             {/*                            <div className="avatar">*/}
-                            {/*                                <img src={img1} alt="Bidzen"/>*/}
+                            {/*                                <img src={img1} alt="dkp"/>*/}
                             {/*                            </div>*/}
                             {/*                            <div className="infor">*/}
                             {/*                                <p>Bid listed for <span className="status">25 ETH 8</span>*/}

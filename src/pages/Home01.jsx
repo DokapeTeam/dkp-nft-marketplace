@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../components/header/Header';
 import Slider01 from '../components/slider/Slider01';
 import dataSlider from '../assets/fake-data/dataSlider';
-import LiveAution from '../components/layouts/home/LiveAution';
+import LiveAuction from '../components/layouts/home/LiveAuction';
 import dataLiveAution from '../assets/fake-data/dataLiveAution'
 import LatestCollections from '../components/layouts/home/LatestCollections';
 import dataCollections from '../assets/fake-data/dataCollections'
@@ -19,7 +19,7 @@ const Home01 = () => {
   return <div className='home-1'>
       <Header />
       <Slider01 data={dataSlider} />
-      <LiveAution data={dataLiveAution} />
+      <LiveAuction data={dataLiveAution} />
       <LatestCollections data={dataCollections} />
       <BestSeller data={dataBestSeller} />
       <TrendingCollections data={dataTrendingCollections} />

@@ -20,7 +20,7 @@ export const Newsletters = () => {
                     </div>
                 </div>
                 <div className="new-letter-img">
-                    <img src={img} alt="Bidzen" />
+                    <img src={img} alt="DKP" />
                 </div>
             </div>
         </div>

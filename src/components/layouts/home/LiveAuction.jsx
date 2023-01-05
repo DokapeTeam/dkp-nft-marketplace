@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import Countdown from "react-countdown";
 
-const LiveAution = props => {
+const LiveAuction = props => {
     const data = props.data;
   return (
     <section className="tf-live-auctions tf-section bg-color-1">
@@ -52,7 +52,7 @@ const LiveAution = props => {
                         {
                             data.map((item,index) => (
                                 <SwiperSlide key={index}>
-                                    <LiveAutionItem item={item} />
+                                    <LiveAuctionItem item={item} />
                                 </SwiperSlide>
                             ))
                         }
@@ -67,7 +67,7 @@ const LiveAution = props => {
   );
 };
 
-const LiveAutionItem = props => (
+const LiveAuctionItem = props => (
 
     <div className="swiper-slide">
         <div className="slider-item">
@@ -107,4 +107,4 @@ const LiveAutionItem = props => (
     </div>
 )
 
-export default LiveAution;
+export default LiveAuction;

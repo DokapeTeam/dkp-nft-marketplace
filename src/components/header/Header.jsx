@@ -6,14 +6,14 @@ import menus from "../../pages/menu";
 import DarkMode from "./DarkMode"
 
 import icon from '../../assets/images/icon/connect-wallet.svg'
-import {useEtherBalance, useEthers} from "@usedapp/core";
-import {formatEther} from "@ethersproject/units";
-import {auth} from "../../firebase";
+import {useEthers} from "@usedapp/core";
+
 
 const Header = () => {
     const navigate = useNavigate()
     const {pathname} = useLocation();
     const headerRef = useRef(null)
+
     useEffect(() => {
         window.addEventListener('scroll', isSticky);
         return () => {
@@ -38,20 +38,7 @@ const Header = () => {
 
 
     const [activeIndex, setActiveIndex] = useState(null);
-    const handleOnClick = index => {
-        setActiveIndex(index);
-    };
-
-    const {activateBrowserWallet, account} = useEthers();
-    const etherBalance = useEtherBalance(account);
-
-    const handleConnectWallet = () => {
-        activateBrowserWallet();
-        console.log(`${etherBalance && parseFloat(formatEther(etherBalance)).toFixed(3)} ETH ${account.slice(0, 6)}...${account.slice(
-            account.length - 5,
-            account.length
-        )}`)
-    }
+    const {account, deactivate, activateBrowserWallet} = useEthers()
 
     return <div>
         <TopBar/>
@@ -83,23 +70,20 @@ const Header = () => {
                                         menus.map((data, index) => (
                                             <li key={index}
                                                 className={`menu-item menu-item ${activeIndex === index ? 'active' : ''} `}>
-                                                <a href='' onClick={() => {
-                                                    !auth.currentUser ?
-                                                        navigate('/sign_in')
-                                                        : navigate(data.url)
-                                                }}>{data.name}</a>
+                                                <Link to={data.url}>{data.name}</Link>
                                             </li>
                                         ))
                                     }
                                 </ul>
                             </nav>
-                            <div className="button-connect-wallet">
+                            {<div className="button-connect-wallet">
                                 <a href="" className="sc-button wallet style-2"
-                                      onClick={() => !auth.currentUser ? navigate('/sign_in') : handleConnectWallet}>
+                                   onClick={() => account ? deactivate() : activateBrowserWallet()}>
                                     <img src={icon} alt="icon"/>
-                                    <span>Connect Wallet</span>
+                                    <span>{account ? 'Disconnect' : 'Connect Wallet'}</span>
                                 </a>
                             </div>
+                            }
                             <DarkMode/>
                         </div>
                     </div>

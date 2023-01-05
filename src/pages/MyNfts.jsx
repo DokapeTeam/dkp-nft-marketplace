@@ -9,6 +9,8 @@ import {marketAddress, nftAddress} from "../config";
 import axios from "axios";
 import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
 import DKPMarket from '../artifacts/contracts/DKPMarketplace.sol/DKPMarketplace.json'
+import {collection, getDocs} from "firebase/firestore";
+import {firestore} from "../firebase";
 
 const MyNfts = () => {
 
@@ -16,44 +18,60 @@ const MyNfts = () => {
     const [loadingState, setLoadingState] = useState(false)
 
     useEffect(() => {
-        loadNFTs()
+        getUsers().then(users => {
+            loadNFTs(users)
+        })
+
     }, [])
 
-    async function loadNFTs() {
-        const web3Modal = new Web3Modal()
-        const connection = await web3Modal.connect()
-        const provider = new ethers.providers.Web3Provider(connection)
-        const signer = provider.getSigner()
+    const getUsers = async () => {
+        const response = await getDocs(collection(firestore, 'authors'))
+        const users = response.docs.map((doc, index) => doc.data())
+        if (users !== null) {
+            return users
+        }
+    }
+    async function loadNFTs(users) {
+        try {
+            const web3Modal = new Web3Modal()
+            const connection = await web3Modal.connect()
+            const provider = new ethers.providers.Web3Provider(connection)
+            const signer = provider.getSigner()
 
-        const tokenContract = new ethers.Contract(nftAddress, NFT.abi, provider)
-        const marketContract = new ethers.Contract(marketAddress, DKPMarket.abi, signer)
-        const data = await marketContract.fetchMyNFTs()
+            const tokenContract = new ethers.Contract(nftAddress, NFT.abi, provider)
+            const marketContract = new ethers.Contract(marketAddress, DKPMarket.abi, signer)
+            const data = await marketContract.fetchMyNFTs()
 
-        const currencyRateResponse = await axios.get('https://www.binance.com/api/v3/ticker/price?symbol=ETHUSDT')
-        const usdCurrencyRate = currencyRateResponse.data['price']
+            const currencyRateResponse = await axios.get('https://www.binance.com/api/v3/ticker/price?symbol=ETHUSDT')
+            const usdCurrencyRate = currencyRateResponse.data['price']
 
-        const items = await Promise.all(data.map(async item => {
-            const tokenUri = await tokenContract.tokenURI(item.tokenId)
-            // we want get the token metadata - json
-            const meta = await axios.get(tokenUri)
-            let price = ethers.utils.formatUnits(item.price.toString(), 'ether')
-            return {
-                price,
-                tokenId: item.tokenId.toNumber(),
-                seller: item.seller,
-                owner: item.owner,
-                image: meta.data.image,
-                name: meta.data.name,
-                description: meta.data.description,
-                usdPrice: price * usdCurrencyRate,
-                sold: item.sold,
-                category: item.category,
-                createdDate: item.dateMinted.toNumber(),
-            }
-        }))
-
-        setNFts(items)
-        setLoadingState(true)
+            const items = await Promise.all(data.map(async item => {
+                const tokenUri = await tokenContract.tokenURI(item.tokenId)
+                // we want get the token metadata - json
+                const meta = await axios.get(tokenUri)
+                let price = ethers.utils.formatUnits(item.price.toString(), 'ether')
+                let sellerInfo = users.find((user) => user.walletAddress === item.seller)
+                return {
+                    price,
+                    tokenId: item.tokenId.toNumber(),
+                    seller: item.seller,
+                    owner: item.owner,
+                    image: meta.data.image,
+                    name: meta.data.name,
+                    description: meta.data.description,
+                    usdPrice: price * usdCurrencyRate,
+                    sold: item.sold,
+                    category: item.category,
+                    createdDate: item.dateMinted.toNumber(),
+                    author: sellerInfo,
+                }
+            }))
+            setNFts(items)
+            setLoadingState(true)
+        }catch (e){
+            console.log(e)
+            setLoadingState(true)
+        }
     }
 
 

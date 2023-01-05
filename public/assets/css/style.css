@@ -1,9 +1,3 @@
-/**
-  * Name: Bidzen | NFT Marketplace React Js Template
-  * Version: 1.0.1
-  * Author: Themesflat
-  * Author URI: http://www.themesflat.com
-*/
 @import "ntfs.css";
 @import "shortcodes.css";
 @import "responsive.css";
@@ -241,10 +235,11 @@ input::-webkit-inner-spin-button {
 }
 
 img {
-    height                : auto;
+    height                : 100% ;
     max-width             : 100%;
     vertical-align        : middle;
-    -ms-interpolation-mode: bicubic
+    -ms-interpolation-mode: bicubic;
+    object-fit: cover;
 }
 
 p {
@@ -3178,4 +3173,20 @@ font-size: 16px;
 .close {
     color: var(--color-1);
     text-shadow: unset;
+}
+.profile-avatar{
+    height: 200px;
+    width: 200px;
+    object-fit: cover;
+    border-radius: 4%;
+    cursor: pointer;
+}
+.top-profile-section{
+    margin-top: 50px;
+}
+.top-profile-section .p{
+
+}
+.profile-information {
+    margin:auto 0 16px 24px;
 }

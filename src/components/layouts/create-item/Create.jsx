@@ -91,7 +91,6 @@ const Create = () => {
         let listingPrice = await contract.getListingPrice()
         listingPrice = listingPrice.toString()
 
-        console.log(formInput.category, 'form category')
         transaction = await contract.makeMarketItem(nftAddress, tokenId, price, formInput.category, {value: listingPrice})
         await transaction.wait()
         await navigate('/')

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
 import Header from '../components/header/Header';
-import Create from '../components/layouts/creacte-item/Create';
+import Create from '../components/layouts/create-item/Create';
 import Footer from '../components/footer/Footer';
 
 const CreateItem = () => {

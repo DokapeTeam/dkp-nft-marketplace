@@ -6,7 +6,7 @@ import Item from './Item'
 import ItemDetails from './ItemDetails'
 import Blog from './Blog'
 import BlogDetails from './BlogDetails'
-import Authors from './Authors'
+import Profile from './Profile'
 import ConnectWallet from './ConnectWallet'
 import CreateItem from './CreateItem'
 import Login from './Login'
@@ -22,13 +22,13 @@ const routes = [
     {path: '/item-details', component: <ItemDetails/>},
     {path: '/blog', component: <Blog/>},
     {path: '/blog-details', component: <BlogDetails/>},
-    {path: '/authors', component: <Authors/>},
+    {path: '/authors', component: <Profile/>},
     {path: '/connect-wallet', component: <ConnectWallet/>},
     {path: '/mint_tokens', component: <CreateItem/>},
     {path: '/sign_in', component: <Login/>},
     {path: '/sign_up', component: <Register/>},
     {path: '/contact', component: <Contact/>},
-    {path: '/profile', component: <Authors/>},
+    {path: '/profile', component: <Profile/>},
     {path: '/*', component: <Home/>}
 ]
 

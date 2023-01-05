@@ -4,9 +4,9 @@ import Header from '../components/header/Header';
 import Newsletters from '../components/layouts/Newsletters';
 import Footer from '../components/footer/Footer';
 
-import {signInWithEmailAndPassword} from 'firebase/auth';
+import {signInWithEmailAndPassword, signInWithPopup} from 'firebase/auth';
 import img1 from '../assets/images/background/img-login.jpg'
-import {auth} from "../firebase";
+import {auth, provider} from "../firebase";
 
 const Login = () => {
 
@@ -18,16 +18,24 @@ const Login = () => {
     function signIn() {
         signInWithEmailAndPassword(auth, signInForm.email, signInForm.password)
             .then((userCredential) => {
-                // Signed in
                 const user = userCredential.user;
-                navigate("/")
                 console.log(user);
+                navigate("/")
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(errorCode, errorMessage)
             });
+    }
+
+    const signInWithGoogle = () => {
+        signInWithPopup(auth, provider).then((result) => {
+            console.log(result)
+            // navigate("/")
+        }).catch((error) => {
+            console.log(error)
+        });
     }
 
     return <div>
@@ -63,7 +71,7 @@ const Login = () => {
                                     <h3>Login Your Account</h3>
                                     <p className="desc">Most popular gaming digital nft market place </p>
                                 </div>
-                                <div id="create-item-1" >
+                                <div id="create-item-1">
                                     <input name="user" type="text" placeholder="User Name/Email Address"
                                            required
                                            onChange={(e) => setSignInForm({...signInForm, email: e.target.value})}/>
@@ -82,17 +90,18 @@ const Login = () => {
                                         <label>Don't have an account yet?&nbsp;</label> <a href="/sign_up">Sign Up</a>
                                     </div>
                                 </div>
-                                {/*<div className="other-login">*/}
-                                {/*    <div className="text">Or</div>*/}
-                                {/*    <div className="widget-social">*/}
-                                {/*        <ul>*/}
-                                {/*            <li><Link to="#" className="active"><i className="fab fa-facebook-f"></i></Link>*/}
-                                {/*            </li>*/}
-                                {/*            <li><Link to="#"><i className="fab fa-twitter"></i></Link></li>*/}
-                                {/*            <li><Link to="#"><i className="fab fa-google-plus-g"></i></Link></li>*/}
-                                {/*        </ul>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
+                                <div className="other-login">
+                                    <div className="text">Or</div>
+                                    <div className="widget-social">
+                                        <ul>
+                                            {/*<li><Link to="#" className="active"><i className="fab fa-facebook-f"></i></Link>*/}
+                                            {/*</li>*/}
+                                            {/*<li><Link to="#"><i className="fab fa-twitter"></i></Link></li>*/}
+                                            <li><Link to="#" onClick={() => signInWithGoogle()}><i
+                                                className="fab fa-google-plus-g"></i></Link></li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                             <div className="form-background" style={{height: "100%"}}>
                                 <img src={img1} alt="skp" style={{borderRadius: "0px"}}/>

@@ -12,6 +12,8 @@ import axios from "axios";
 import {marketAddress, nftAddress} from "../config";
 import PopularCollection from "../components/layouts/explore/PopularCollection";
 import Web3Modal from "web3modal";
+import {collection, getDocs} from "firebase/firestore";
+import {firestore} from "../firebase";
 
 const Home = () => {
     const [nfts, setNFts] = useState([])
@@ -20,42 +22,58 @@ const Home = () => {
     let items = []
 
     useEffect(() => {
-        loadNFTs()
+        getUsers().then(users => {
+            loadNFTs(users)
+        })
+
     }, [])
 
-    const loadNFTs = async () => {
-        setLoadingState(false)
-        const provider = new ethers.providers.Web3Provider(
-            window.ethereum
-        )
-        console.log(provider)
-        const tokenContract = new ethers.Contract(nftAddress, NFT.abi, provider)
-        const marketContract = new ethers.Contract(marketAddress, DKPMarket.abi, provider)
-        const data = await marketContract.fetchMarketTokens()
-        const currencyRateResponse = await axios.get('https://www.binance.com/api/v3/ticker/price?symbol=ETHUSDT')
-        const usdCurrencyRate = currencyRateResponse.data['price']
-        items = await Promise.all(data.map(async item => {
-            const tokenUri = await tokenContract.tokenURI(item.tokenId)
-            // we want get the token metadata - json
-            const meta = await axios.get(tokenUri)
-            let price = ethers.utils.formatUnits(item.price.toString(), 'ether')
-            return {
-                price,
-                tokenId: item.tokenId.toNumber(),
-                seller: item.seller,
-                owner: item.owner,
-                image: meta.data.image,
-                name: meta.data.name,
-                description: meta.data.description,
-                usdPrice: price * usdCurrencyRate,
-                sold: item.sold,
-                category: item.category,
-                createdDate: item.dateMinted.toNumber(),
-            }
-        }))
-        setNFts(items)
-        console.log(items)
-        setLoadingState(true)
+    const getUsers = async () => {
+        const response = await getDocs(collection(firestore, 'authors'))
+        const users = response.docs.map((doc, index) => doc.data())
+        if (users !== null) {
+            return users
+        }
+    }
+    const loadNFTs = async (users) => {
+        try {
+            setLoadingState(false)
+            const provider = new ethers.providers.Web3Provider(
+                window.ethereum
+            )
+            const tokenContract = new ethers.Contract(nftAddress, NFT.abi, provider)
+            const marketContract = new ethers.Contract(marketAddress, DKPMarket.abi, provider)
+            const data = await marketContract.fetchMarketTokens()
+            const currencyRateResponse = await axios.get('https://www.binance.com/api/v3/ticker/price?symbol=ETHUSDT')
+            const usdCurrencyRate = currencyRateResponse.data['price']
+            items = await Promise.all(data.map(async item => {
+                const tokenUri = await tokenContract.tokenURI(item.tokenId)
+                // we want get the token metadata - json
+                const meta = await axios.get(tokenUri)
+                let price = ethers.utils.formatUnits(item.price.toString(), 'ether')
+                let sellerInfo = users.find((user) => user.walletAddress === item.seller)
+                return {
+                    price,
+                    tokenId: item.tokenId.toNumber(),
+                    seller: item.seller,
+                    owner: item.owner,
+                    image: meta.data.image,
+                    name: meta.data.name,
+                    description: meta.data.description,
+                    usdPrice: price * usdCurrencyRate,
+                    sold: item.sold,
+                    category: item.category,
+                    createdDate: item.dateMinted.toNumber(),
+                    author: sellerInfo,
+                }
+            }))
+            setNFts(items)
+            console.log(items)
+            setLoadingState(true)
+        } catch (e) {
+            console.log(e)
+            setLoadingState(true)
+        }
     }
 
     async function buyNFT(nft) {
