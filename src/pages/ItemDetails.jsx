@@ -1,14 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Link, useLocation, useNavigate} from 'react-router-dom'
 import Header from '../components/header/Header';
 import 'react-tabs/style/react-tabs.css';
 import LiveAution from '../components/layouts/home02/LiveAution';
 import dataLiveAution from '../assets/fake-data/dataLiveAution'
 import Footer from '../components/footer/Footer';
-
-import img1 from '../assets/images/avatar/avt-6.jpg'
-import img2 from '../assets/images/avatar/avt-2.jpg'
-import img3 from '../assets/images/avatar/avt-4.jpg'
 import Web3Modal from "web3modal";
 import {ethers} from "ethers";
 import {marketAddress, nftAddress} from "../config";
@@ -18,28 +14,6 @@ import {useEthers} from "@usedapp/core";
 const ItemDetails = () => {
     const {state} = useLocation();
     const {item} = state
-    const [dataHistory] = useState(
-        [
-            {
-                img: img1,
-                name: "@Johnson",
-                time: "8 hours ago ",
-                price: "25 ETH ",
-            },
-            {
-                img: img2,
-                name: "@Johnson",
-                time: "8 hours ago ",
-                price: "25 ETH ",
-            },
-            {
-                img: img3,
-                name: "@Johnson",
-                time: "8 hours ago ",
-                price: "25 ETH ",
-            },
-        ]
-    )
     const navigate = useNavigate()
 
     const {account} = useEthers()
@@ -52,7 +26,7 @@ const ItemDetails = () => {
         const contract = new ethers.Contract(marketAddress, DKPMarket.abi, signer)
 
         const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
-        const transaction = await contract.createMarketSale(nftAddress, nft.tokenId, {
+        const transaction = await contract.createMarketSale(nftAddress, nft.itemId, {
             value: price
         })
 
@@ -107,7 +81,8 @@ const ItemDetails = () => {
                             <p className="mg-bt-42">{item.description}</p>
                             <div className="author-item">
                                 <div className="avatar">
-                                    <img src={item.author.photoUrl} alt="dkp" style={{objectFit: 'cover', height: '100%'}}/>
+                                    <img src={item.author.photoUrl} alt="dkp"
+                                         style={{objectFit: 'cover', height: '100%'}}/>
                                 </div>
                                 <div className="infor">
                                     <div className="create">Owner By</div>

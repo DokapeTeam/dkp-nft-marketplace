@@ -26,11 +26,11 @@ const Home = () => {
             loadNFTs(users)
         })
 
-    }, [])
+    })
 
     const getUsers = async () => {
         const response = await getDocs(collection(firestore, 'authors'))
-        const users = response.docs.map((doc, index) => doc.data())
+        const users = response.docs.map((doc, _) => doc.data())
         if (users !== null) {
             return users
         }
@@ -65,6 +65,7 @@ const Home = () => {
                     category: item.category,
                     createdDate: item.dateMinted.toNumber(),
                     author: sellerInfo,
+                    itemId: item.itemId.toNumber(),
                 }
             }))
             setNFts(items)
@@ -84,7 +85,7 @@ const Home = () => {
         const contract = new ethers.Contract(marketAddress, DKPMarket.abi, signer)
 
         const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
-        const transaction = await contract.createMarketSale(nftAddress, nft.tokenId, {
+        const transaction = await contract.createMarketSale(nftAddress, nft.itemId, {
             value: price
         })
 
