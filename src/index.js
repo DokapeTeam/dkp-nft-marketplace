@@ -6,11 +6,10 @@ import ScrollToTop from './ScrollToTop';
 import {Config, DAppProvider, Goerli, Mainnet} from '@usedapp/core'
 import {getDefaultProvider} from "ethers";
 
-const config: Config = {
-    readOnlyChainId: Mainnet.chainId,
+const config: Config =  {
+    readOnlyChainId: 1337,
     readOnlyUrls: {
-        [Mainnet.chainId]: getDefaultProvider('mainnet'),
-        [Goerli.chainId]: getDefaultProvider('goerli'),
+        1337 : 'http://127.0.0.1:8545/'
     },
 }
 

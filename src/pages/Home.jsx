@@ -25,8 +25,7 @@ const Home = () => {
         getUsers().then(users => {
             loadNFTs(users)
         })
-
-    })
+    }, [])
 
     const getUsers = async () => {
         const response = await getDocs(collection(firestore, 'authors'))
